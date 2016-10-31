@@ -920,9 +920,10 @@ var Deck = (function () {
     }
   }
 
-  function Deck() {
+  //cardArr is a 2d array of rank, suit   [[1,2][2,2]...]
+  function Deck(cardArr) {
     // init cards array
-    var cards = new Array(24);
+    var cards = new Array(5);
 
     var $el = createElement('div');
     var self = observable({ mount: mount, unmount: unmount, cards: cards, $el: $el });
@@ -946,12 +947,12 @@ var Deck = (function () {
 
     // create cards
     var counter = 0;
-    [1, 9, 10, 11, 12, 13].forEach(function (rank) {
-      [0, 1, 2, 3].forEach(function (suit) {
-        card = cards[counter] = _card(rank, suit, counter);
-        counter++;
-        card.mount($el);
-      });
+    cardArr.forEach(function (pair) {
+      var rank = pair[0];
+      var suit = pair[1];
+      card = cards[counter] = _card(rank, suit, counter);
+      counter++;
+      card.mount($el);
     });
 
     return self;
