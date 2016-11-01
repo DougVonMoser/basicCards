@@ -1,6 +1,4 @@
 button {
-    position: absolute;
-    left: 0px;
-    top: 0px;
-    z-index: -1;
+    padding: 40px;
+    border: 2px solid red;
 }

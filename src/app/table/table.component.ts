@@ -1,44 +1,37 @@
+declare var Deck: any;
 import { Component, OnInit } from '@angular/core';
 
 import {CommunicateService} from '../communicate.service'
+import {GenHandService} from '../gen-hand.service'
 
 import './rxjs-operators';
+
 
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.css'],
-  providers: [CommunicateService]
+  providers: [CommunicateService, GenHandService]
 })
 export class TableComponent implements OnInit {
-deck: Deck;
-  constructor(private communicateService: CommunicateService){}
+deck;
+hand = [];
+player;
+  constructor(private genHandService: GenHandService,private communicateService: CommunicateService){}
   ngOnInit() {
     this.getCrudeHand()
   }
   getCrudeHand(){
-    this.communicateService.getHand().subscribe(hand => {this.generateHand(hand)})
-  }
-  generateHand(crudeHand: any){
-    console.log(crudeHand)
-    let deck = Deck(crudeHand)
-    deck.mount(document.getElementById('container'))
-    deck.cards.forEach(function (card, i) {
-      card.setSide('back')
-      console.dir(window.innerWidth)
-      card.animateTo({
-          delay: 0,  // 1000 + i * 200, // wait 1 second + i * 2 ms
-          duration: 500,
-      ease: 'quartOut',
-          x: -270 + (window.innerWidth / 5 ) * i -1,
-          y: -100   // Math.random() * window.innerHeight - window.innerHeight / 2
-      })
-      card.enableDragging()
-      card.enableFlipping()
+    this.communicateService.getHand()
+    .subscribe(hand => {
+      this.player = hand.player;
+      this.deck = this.genHandService.generateHand(hand.hand)
+      this.hand = this.deck.cards
     })
   }
   flip(){
-    this.deck.flip()
+    this.deck.flip();
+    this.communicateService.say('hello from player ' + this.player)
+    .subscribe(response => {console.log(response.message)})
   }
-
 }
